@@ -67,5 +67,9 @@ public class GameRenderer {
 		shapeRender.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
 		shapeRender.arc(x + radius, y + height - radius, radius, 90f, 90f);
 	}
+	
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
 
 }

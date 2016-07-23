@@ -1,15 +1,17 @@
 package com.pddgames.challengingslidingpuzzle.screens;
 
+import java.nio.channels.GatheringByteChannel;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.pddgames.challengingslidingpuzzle.gameworld.GameWorld;
 
 public class GameScreen implements Screen {
 	
-	public static final int GAME_WIDTH = 320;
-	
 	private GameWorld gameWorld;
 	private GameRenderer gameRenderer;
+	
+	public static final int GAME_WIDTH = 320;
 	
 	public GameScreen() {
 		gameWorld = new GameWorld();
@@ -28,6 +30,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void render(float delta) {
+		gameWorld.update(gameRenderer.getCamera(), delta);
 		gameRenderer.render();
 	}
 
