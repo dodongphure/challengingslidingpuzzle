@@ -22,18 +22,25 @@ public class Block {
 		return bound.contains(x, y);
 	}
 	
-	public void update(float delta) {
+	/**
+	 * 
+	 * @param delta
+	 * @return true if this Block is moving, else return false
+	 */
+	public boolean update(float delta) {
 		if(newPosition.x == position.x) {
 			if(newPosition.y > position.y) {
 				position.add(0, delta * MOVE_VELOCITY);// Move Up.
 				if(position.y > newPosition.y) {
 					position.y = newPosition.y;
 				}
+				return true;
 			} else if(newPosition.y < position.y) {
 				position.add(0, -delta * MOVE_VELOCITY);// Move Down.
 				if(position.y < newPosition.y) {
 					position.y = newPosition.y;
 				}
+				return true;
 			}
 		} else if(newPosition.y == position.y) {
 			if(newPosition.x > position.x) {
@@ -41,13 +48,16 @@ public class Block {
 				if(position.x > newPosition.x) {
 					position.x = newPosition.x;
 				}
+				return true;
 			} else if(newPosition.x < position.x) {
 				position.add(-delta * MOVE_VELOCITY, 0);// Move Left
 				if(position.x < newPosition.x) {
 					position.x = newPosition.x;
 				}
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public float getX() {

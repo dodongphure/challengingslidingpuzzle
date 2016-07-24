@@ -64,22 +64,25 @@ public class GameWorld {
 	}
 	
 	public void update(OrthographicCamera camera, float delta) {
+		// Check whether a block is moving
+		boolean isBlockMoving = false;
+		for(Block block : blocks) {
+			isBlockMoving |= block.update(delta);
+		}
+		
 		if (Gdx.input.justTouched()) {
 			Vector3 touchPoint = new Vector3();
 			camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 			for(Block block : blocks) {
 				float xPosition = block.getX();
 				float yPosition = block.getY();
-				if(isBlockMovable(xPosition, yPosition) && block.isTouched(touchPoint.x, touchPoint.y)) {
+				if(!isBlockMoving && isBlockMovable(xPosition, yPosition) && block.isTouched(touchPoint.x, touchPoint.y)) {
 					block.setNewPosition(emptyBlockPosition);
 					emptyBlockPosition.set(xPosition, yPosition);
 				}
 			}
 		}
 		
-		for(Block block : blocks) {
-			block.update(delta);
-		}
 	}
 	
 	private boolean isBlockMovable(float x, float y) {
