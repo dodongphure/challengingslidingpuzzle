@@ -79,6 +79,7 @@ public class GameWorld {
 				if(!isBlockMoving && isBlockMovable(xPosition, yPosition) && block.isTouched(touchPoint.x, touchPoint.y)) {
 					block.setNewPosition(emptyBlockPosition);
 					emptyBlockPosition.set(xPosition, yPosition);
+					break;
 				}
 			}
 		}

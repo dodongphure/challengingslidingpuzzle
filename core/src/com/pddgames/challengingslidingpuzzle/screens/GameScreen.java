@@ -1,9 +1,8 @@
 package com.pddgames.challengingslidingpuzzle.screens;
 
-import java.nio.channels.GatheringByteChannel;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.pddgames.challengingslidingpuzzle.gameworld.GameRenderer;
 import com.pddgames.challengingslidingpuzzle.gameworld.GameWorld;
 
 public class GameScreen implements Screen {

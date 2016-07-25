@@ -10,11 +10,13 @@ public class Block {
 	private Vector2 position;
 	private Vector2 newPosition;
 	private int size;
+	private int number;
 	
 	public Block(float x, float y, int size, int number) {
 		this.position = new Vector2(x, y);
 		this.newPosition = new Vector2(x, y);
 		this.size = size;
+		this.number = number;
 	}
 	
 	public boolean isTouched(float x, float y) {
@@ -82,5 +84,9 @@ public class Block {
 	
 	public void setNewPosition(Vector2 newPosition) {
 		this.newPosition.set(newPosition);
+	}
+	
+	public int getNumber() {
+		return this.number;
 	}
 }

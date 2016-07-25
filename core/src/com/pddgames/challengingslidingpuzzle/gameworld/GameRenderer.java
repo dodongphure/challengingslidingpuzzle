@@ -1,4 +1,4 @@
-package com.pddgames.challengingslidingpuzzle.screens;
+package com.pddgames.challengingslidingpuzzle.gameworld;
 
 import java.util.List;
 
@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.pddgames.challengingslidingpuzzle.gameworld.GameWorld;
+import com.badlogic.gdx.utils.Align;
+import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 import com.pddgames.challengingslidingpuzzle.objects.Block;
+import com.pddgames.challengingslidingpuzzle.screens.GameScreen;
 
 public class GameRenderer {
 	
@@ -36,7 +38,7 @@ public class GameRenderer {
 	
 	public void render() {
 		// Fill the entire screen with black, to prevent potential flickering.
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(100/255f, 100/255f, 100/255f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		drawBlocks();
@@ -49,6 +51,13 @@ public class GameRenderer {
 			drawRoundedBlock(block.getX(), block.getY(), block.getSize(), block.getSize(), 4);
 		}
 		shapeRender.end();
+		
+		batcher.begin();
+		for(Block block : blocks) {
+			AssetLoader.font.draw(batcher, block.getNumber() + "", block.getX(), block.getY() + block.getSize()/2 + 8,
+					block.getSize(), Align.center, false);
+		}
+		batcher.end();
 	}
 	
 	private void drawRoundedBlock(float x, float y, int width, int height, float radius) {
