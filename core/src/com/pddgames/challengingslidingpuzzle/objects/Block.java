@@ -3,6 +3,11 @@ package com.pddgames.challengingslidingpuzzle.objects;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * 
+ * @author dodongphu
+ *
+ */
 public class Block {
 	
 	private static final int MOVE_VELOCITY = 520;

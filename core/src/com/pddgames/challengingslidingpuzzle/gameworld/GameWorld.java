@@ -11,20 +11,25 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.pddgames.challengingslidingpuzzle.objects.Block;
+import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
 import com.pddgames.challengingslidingpuzzle.screens.GameScreen;
 
 public class GameWorld {
 	
 	private static final int BLOCKS_NUM_PER_ROW = 5; // This is also number of blocks per column.
 	private static final int GAP_BETWEEN_BLOCKS = 5;
+	private static final int GAME_TIME_LIMIT = 60; // in minute.
 	
 	private List<Block> blocks;
 	private int blockSize;
+	private static RecordingData recordingData;
 	
 	private Vector2 emptyBlockPosition;
 	
 	public GameWorld() {
 		initailzeBlocks();
+		recordingData = new RecordingData();
+		recordingData.start();
 	}
 	
 	private void initailzeBlocks() {
@@ -79,9 +84,14 @@ public class GameWorld {
 				if(!isBlockMoving && isBlockMovable(xPosition, yPosition) && block.isTouched(touchPoint.x, touchPoint.y)) {
 					block.setNewPosition(emptyBlockPosition);
 					emptyBlockPosition.set(xPosition, yPosition);
+					recordingData.inscreaseMovingCount();
 					break;
 				}
 			}
+		}
+		
+		if(Integer.valueOf(recordingData.getMinute()) >= GAME_TIME_LIMIT) {
+			//TODO: return to the main menu.
 		}
 		
 	}
@@ -94,5 +104,9 @@ public class GameWorld {
 	
 	public List<Block> getBlocks() {
 		return this.blocks;
+	}
+	
+	public static RecordingData getRecordingData() {
+		return recordingData;
 	}
 }

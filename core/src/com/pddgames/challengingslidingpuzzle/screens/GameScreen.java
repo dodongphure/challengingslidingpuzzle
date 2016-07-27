@@ -5,6 +5,11 @@ import com.badlogic.gdx.Screen;
 import com.pddgames.challengingslidingpuzzle.gameworld.GameRenderer;
 import com.pddgames.challengingslidingpuzzle.gameworld.GameWorld;
 
+/**
+ * 
+ * @author dodongphu
+ *
+ */
 public class GameScreen implements Screen {
 	
 	private GameWorld gameWorld;

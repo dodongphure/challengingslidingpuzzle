@@ -11,20 +11,28 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.Align;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 import com.pddgames.challengingslidingpuzzle.objects.Block;
+import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
 import com.pddgames.challengingslidingpuzzle.screens.GameScreen;
 
+/**
+ * 
+ * @author dodongphu
+ *
+ */
 public class GameRenderer {
 	
 	private List<Block> blocks;
-	private GameWorld gameWorld;
+	private RecordingData recordingData;
+	private int gameHeight;
 	
 	private OrthographicCamera camera;
 	private SpriteBatch batcher;
 	private ShapeRenderer shapeRender;
 	
 	public GameRenderer(GameWorld gameWorld, int gameHeight) {
-		this.gameWorld = gameWorld;
 		this.blocks = gameWorld.getBlocks();
+		this.recordingData = gameWorld.getRecordingData();
+		this.gameHeight = gameHeight;
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, GameScreen.GAME_WIDTH, gameHeight);
@@ -42,6 +50,7 @@ public class GameRenderer {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		drawBlocks();
+		drawRecordingData();
 	}
 	
 	private void drawBlocks() {
@@ -53,6 +62,7 @@ public class GameRenderer {
 		shapeRender.end();
 		
 		batcher.begin();
+		AssetLoader.font.getData().setScale(1f);
 		for(Block block : blocks) {
 			AssetLoader.font.draw(batcher, block.getNumber() + "", block.getX(), block.getY() + block.getSize()/2 + 8,
 					block.getSize(), Align.center, false);
@@ -75,6 +85,14 @@ public class GameRenderer {
 		shapeRender.arc(x + width - radius, y + radius, radius, 270f, 90f);
 		shapeRender.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
 		shapeRender.arc(x + radius, y + height - radius, radius, 90f, 90f);
+	}
+	
+	private void drawRecordingData() {
+		batcher.begin();
+		AssetLoader.font.getData().setScale(.5f);
+		AssetLoader.font.draw(batcher, "Time: " + recordingData.getMinute() + ":" + recordingData.getSecond()
+				+ " Move: " + recordingData.getMovingCount(), 10, this.gameHeight - 10);
+		batcher.end();
 	}
 	
 	public OrthographicCamera getCamera() {
