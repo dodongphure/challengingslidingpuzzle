@@ -31,7 +31,7 @@ public class GameRenderer {
 	
 	public GameRenderer(GameWorld gameWorld, int gameHeight) {
 		this.blocks = gameWorld.getBlocks();
-		this.recordingData = gameWorld.getRecordingData();
+		this.recordingData = GameWorld.getRecordingData();
 		this.gameHeight = gameHeight;
 		
 		camera = new OrthographicCamera();

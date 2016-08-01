@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 import com.pddgames.challengingslidingpuzzle.screens.GameScreen;
+import com.pddgames.challengingslidingpuzzle.screens.MenuScreen;
 
 public class ChallengingSlidingPuzzle extends Game {
 	
@@ -15,7 +16,7 @@ public class ChallengingSlidingPuzzle extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		AssetLoader.load();
-		setScreen(new GameScreen());
+		setScreen(new MenuScreen());
 	}
 	
 	@Override
