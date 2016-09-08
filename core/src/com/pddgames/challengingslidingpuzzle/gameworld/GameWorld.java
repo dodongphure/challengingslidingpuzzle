@@ -1,59 +1,80 @@
 package com.pddgames.challengingslidingpuzzle.gameworld;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.pddgames.challengingslidingpuzzle.objects.Block;
 import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
 import com.pddgames.challengingslidingpuzzle.screens.GameScreen;
 
-public class GameWorld {
+/**
+ * 
+ * @author PhuDoDong
+ * 
+ * Provide all needed objects for playing game.
+ *
+ */
+public class GameWorld extends Table {
 	
 	private static final int BLOCKS_NUM_PER_ROW = 5; // This is also number of blocks per column.
 	private static final int GAP_BETWEEN_BLOCKS = 5;
 	private static final int GAME_TIME_LIMIT = 60; // in minute.
 	
-	private List<Block> blocks;
-	private int blockSize;
+	//private List<Block> blocks;
+	private float blockSize;
 	private static RecordingData recordingData;
 	
 	private Vector2 emptyBlockPosition;
 	
 	public GameWorld() {
+		
+		setTransform(false);
+		
 		initailzeBlocks();
 		recordingData = new RecordingData();
 		recordingData.start();
 	}
 	
 	private void initailzeBlocks() {
-		blocks = new ArrayList<Block>();
+		//blocks = new ArrayList<Block>();
 		blockSize = (GameScreen.GAME_WIDTH - ((BLOCKS_NUM_PER_ROW-1) * GAP_BETWEEN_BLOCKS)) / BLOCKS_NUM_PER_ROW;
 		List<Integer> randomNumbers = getRandomNumbers();
 		
 		// Draw blocks bottom up, from left to right.
 		int count = 0;
-		int distance = blockSize + GAP_BETWEEN_BLOCKS;
 		for(int i=0; i < BLOCKS_NUM_PER_ROW; i++) {
-			int xPos = i * distance;
 			for(int j=0; j < BLOCKS_NUM_PER_ROW; j++) {
-				int yPos = j * distance;
-				
 				// We do not draw the bottom-right block.
-				if(i == BLOCKS_NUM_PER_ROW-1 && j==0) {
-					emptyBlockPosition = new Vector2(xPos, yPos);
+				if(i == BLOCKS_NUM_PER_ROW-1 && j == BLOCKS_NUM_PER_ROW-1) {
 					continue;
 				}
-				Block block = new Block( xPos, yPos, blockSize, randomNumbers.get(count) );
-				blocks.add(block);
+				Block block = new Block(blockSize, randomNumbers.get(count));
+				block.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						System.out.println(block.getNumber());
+					}
+				});
+				Cell<Block> blockCell = add(block);
+				// add spaces between blocks.
+				if(i < BLOCKS_NUM_PER_ROW - 1) {
+					blockCell.padBottom(GAP_BETWEEN_BLOCKS);
+				}
+				if(j < BLOCKS_NUM_PER_ROW - 1) {
+					blockCell.padRight(GAP_BETWEEN_BLOCKS);
+				}
 				count++;
 			}
+			row();
 		}
 	}
 	
@@ -68,7 +89,7 @@ public class GameWorld {
 		 return numbers;
 	}
 	
-	public void update(OrthographicCamera camera, float delta) {
+	/*public void update(OrthographicCamera camera, float delta) {
 		// Check whether a block is moving
 		boolean isBlockMoving = false;
 		for(Block block : blocks) {
@@ -94,17 +115,21 @@ public class GameWorld {
 			//TODO: return to the main menu.
 		}
 		
+	}*/
+	
+	public void draw(SpriteBatch batch, float parentAlpha) {
+		
 	}
 	
 	private boolean isBlockMovable(float x, float y) {
-		int distance = blockSize + GAP_BETWEEN_BLOCKS;
+		float distance = blockSize + GAP_BETWEEN_BLOCKS;
 		return (emptyBlockPosition.x == x && (emptyBlockPosition.y == y - distance || emptyBlockPosition.y == y + distance))
 			|| (emptyBlockPosition.y == y && (emptyBlockPosition.x == x - distance || emptyBlockPosition.x == x + distance));
 	}
 	
-	public List<Block> getBlocks() {
+	/*public List<Block> getBlocks() {
 		return this.blocks;
-	}
+	}*/
 	
 	public static RecordingData getRecordingData() {
 		return recordingData;

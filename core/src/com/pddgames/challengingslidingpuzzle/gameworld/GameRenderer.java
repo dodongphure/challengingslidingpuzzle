@@ -21,7 +21,7 @@ import com.pddgames.challengingslidingpuzzle.screens.GameScreen;
  */
 public class GameRenderer {
 	
-	private List<Block> blocks;
+/*	private List<Block> blocks;
 	private RecordingData recordingData;
 	private int gameHeight;
 	
@@ -97,6 +97,6 @@ public class GameRenderer {
 	
 	public OrthographicCamera getCamera() {
 		return camera;
-	}
+	}*/
 
 }

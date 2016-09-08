@@ -1,32 +1,45 @@
 package com.pddgames.challengingslidingpuzzle.objects;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 
 /**
  * 
  * @author dodongphu
  *
  */
-public class Block {
+public class Block extends Widget {
 	
 	private static final int MOVE_VELOCITY = 520;
 
-	private Vector2 position;
-	private Vector2 newPosition;
-	private int size;
+	private float size;
+	private Label label;
 	private int number;
 	
-	public Block(float x, float y, int size, int number) {
-		this.position = new Vector2(x, y);
-		this.newPosition = new Vector2(x, y);
+	private ShapeRenderer shapeRender;
+	private Batch batch;
+	
+	public Block(float size, int number) {
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = AssetLoader.font;
+		label = new Label(String.valueOf(number), labelStyle);
+		label.setAlignment(Align.center);
+		
 		this.size = size;
 		this.number = number;
-	}
-	
-	public boolean isTouched(float x, float y) {
-		Rectangle bound = new Rectangle(position.x, position.y, size, size);
-		return bound.contains(x, y);
+		
+		shapeRender = new ShapeRenderer();
+		batch = new SpriteBatch();// create a new SpriteBatch to draw number.
 	}
 	
 	/**
@@ -34,7 +47,7 @@ public class Block {
 	 * @param delta
 	 * @return true if this Block is moving, else return false
 	 */
-	public boolean update(float delta) {
+	/*public boolean update(float delta) {
 		if(newPosition.x == position.x) {
 			if(newPosition.y > position.y) {
 				position.add(0, delta * MOVE_VELOCITY);// Move Up.
@@ -65,33 +78,52 @@ public class Block {
 			}
 		}
 		return false;
+	}*/
+	
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		// Draw rounded block by using ShapeRender.
+		shapeRender.begin(ShapeType.Filled);
+		shapeRender.setColor(1, 1, 1, 1);
+		drawRoundedBlock(getX(), getY(), getWidth(), getHeight(), 4);
+		shapeRender.end();
+		
+		label.setColor(Color.BLACK);
+		label.setBounds(getX(), getY(), getWidth(), getHeight());
+		this.batch.begin();
+		label.draw(this.batch, parentAlpha);
+		this.batch.end();
 	}
 	
-	public float getX() {
-		return this.position.x;
+	private void drawRoundedBlock(float x, float y, float width, float height, float radius) {
+		// Central rectangle
+		shapeRender.rect(x + radius, y + radius, width - 2*radius, height - 2*radius);
+
+        // Four side rectangles, in clockwise order
+		shapeRender.rect(x + radius, y, width - 2*radius, radius);
+		shapeRender.rect(x + width - radius, y + radius, radius, height - 2*radius);
+		shapeRender.rect(x + radius, y + height - radius, width - 2*radius, radius);
+		shapeRender.rect(x, y + radius, radius, height - 2*radius);
+
+        // Four arches, clockwise too
+		shapeRender.arc(x + radius, y + radius, radius, 180f, 90f);
+		shapeRender.arc(x + width - radius, y + radius, radius, 270f, 90f);
+		shapeRender.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
+		shapeRender.arc(x + radius, y + height - radius, radius, 90f, 90f);
 	}
-	
-	public void setX(float x) {
-		this.position.x = x;
-	}
-	
-	public float getY() {
-		return this.position.y;
-	}
-	
-	public void setY(float y) {
-		this.position.y = y;
-	}
-	
-	public int getSize() {
+
+	@Override
+	public float getPrefWidth() {
 		return this.size;
 	}
-	
-	public void setNewPosition(Vector2 newPosition) {
-		this.newPosition.set(newPosition);
+
+	@Override
+	public float getPrefHeight() {
+		return this.size;
 	}
 	
 	public int getNumber() {
 		return this.number;
 	}
+
 }

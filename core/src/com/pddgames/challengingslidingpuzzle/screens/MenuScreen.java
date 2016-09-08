@@ -1,14 +1,17 @@
 package com.pddgames.challengingslidingpuzzle.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.pddgames.challengingslidingpuzzle.ChallengingSlidingPuzzle;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 import com.pddgames.challengingslidingpuzzle.objects.MenuItem;
 
@@ -24,26 +27,12 @@ public class MenuScreen extends ScreenAdapter {
 	private static final String SETTINGS_LABEL = "SETTINGS";
 	private static final String EXIT_GAME_LABEL = "EXIT";
 	
-	private OrthographicCamera camera;
-	private SpriteBatch batcher;
-	private ShapeRenderer shapeRender;
-	
-	private ChallengingSlidingPuzzle game;
 	private MenuItem[] menuItems;
-
-	public MenuScreen() {
-		//this.game = game;
-		initializeMenu();
-		
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, GameScreen.GAME_WIDTH, getGameHeight());
-		batcher = new SpriteBatch();
-		batcher.setProjectionMatrix(camera.combined);
-		shapeRender = new ShapeRenderer();
-		shapeRender.setProjectionMatrix(camera.combined);
-	}
 	
-	private int getGameHeight() {
+	private Stage stage;
+	private Table table;
+
+	/*private int getGameHeight() {
 		int screenWidth = Gdx.graphics.getWidth();
 		int screenHeight = Gdx.graphics.getHeight();
 		return (int) (screenHeight / (screenWidth / GameScreen.GAME_WIDTH));
@@ -54,21 +43,100 @@ public class MenuScreen extends ScreenAdapter {
 		MenuItem settingsBtn = new MenuItem(GameScreen.GAME_WIDTH/2 - MenuItem.MENU_ITEM_WIDTH/2 + MOVING_DISTANCE, 240, SETTINGS_LABEL);
 		MenuItem exitGameBtn = new MenuItem(GameScreen.GAME_WIDTH/2 - MenuItem.MENU_ITEM_WIDTH/2 - MOVING_DISTANCE, 180, EXIT_GAME_LABEL);
 		menuItems = new MenuItem[]{startGameBtn, settingsBtn, exitGameBtn};
-	}
+	}*/
 
 	@Override
 	public void render(float delta) {
 		// Fill the entire screen with black, to prevent potential flickering.
 		Gdx.gl.glClearColor(100/255f, 100/255f, 100/255f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				
-		for(MenuItem menuItem : menuItems) {
+		
+		stage.act(delta);
+		stage.draw();
+		
+		//tweenManager.update(delta);
+		
+		/*for(MenuItem menuItem : menuItems) {
 			menuItem.update(delta);
 		}
-		drawMenuItems();
+		drawMenuItems();*/
 	}
 	
-	private void drawMenuItems() {
+	@Override
+	public void show() {
+		//TODO: optimize using Singleton.
+		stage = new Stage();
+		Gdx.input.setInputProcessor(stage);
+	
+		table = new Table();
+		table.setFillParent(true);
+		
+		initMenuButtons();
+		
+		stage.addActor(table);
+		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(2f)));
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().setScreenSize(width, height);
+		table.invalidateHierarchy();
+	}
+
+	@Override
+	public void dispose() {
+		stage.dispose();
+	}
+	
+	private void initMenuButtons() {
+		TextButtonStyle startBtnStyle = new TextButtonStyle();
+		startBtnStyle.font = AssetLoader.font;
+		TextButton startBtn = new TextButton(START_GAME_LABEL, startBtnStyle);
+		startBtn.padLeft(-60);
+		startBtn.addAction(Actions.moveBy(30, 0, .3f));
+		startBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				startBtn.scaleBy(50);// TODO: not working now.
+				stage.addAction(Actions.sequence(
+						Actions.moveTo(0, stage.getHeight(), .5f),
+						Actions.run(new Runnable() {
+							@Override
+							public void run() {
+								((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
+							}
+						}
+					)));
+			}
+		});
+		
+		TextButtonStyle exitBtnStyle = new TextButtonStyle();
+		exitBtnStyle.font = AssetLoader.font;
+		TextButton exitBtn = new TextButton(EXIT_GAME_LABEL, exitBtnStyle);
+		exitBtn.padLeft(60);
+		exitBtn.addAction(Actions.moveBy(-30, 0, .3f));
+		exitBtn.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				exitBtn.scaleBy(50);// TODO: not working now.
+				stage.addAction(Actions.parallel(
+						Actions.alpha(0, .5f),
+						Actions.moveTo(0, stage.getHeight(), .75f),
+						Actions.delay(.5f, Actions.run(new Runnable() {
+							@Override
+							public void run() {
+								Gdx.app.exit();
+							}
+						}))
+					));
+			}
+		});
+		
+		table.add(startBtn).row();
+		table.add(exitBtn).row();
+	}
+
+	/*private void drawMenuItems() {
 		shapeRender.begin(ShapeType.Filled);
 		shapeRender.setColor(1, 1, 1, 1);
 		for(MenuItem menuItem : menuItems) {
@@ -90,6 +158,6 @@ public class MenuScreen extends ScreenAdapter {
 		shapeRender.rect(x, y, width, height);
 		shapeRender.arc(x, y + height / 2, height / 2, 90f, 180);
 		shapeRender.arc(x + width, y + height / 2, height / 2, 270f, 180);
-	}
+	}*/
 	
 }
