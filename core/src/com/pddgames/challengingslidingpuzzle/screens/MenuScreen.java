@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 import com.pddgames.challengingslidingpuzzle.objects.MenuItem;
 
@@ -89,9 +88,7 @@ public class MenuScreen extends ScreenAdapter {
 	}
 	
 	private void initMenuButtons() {
-		TextButtonStyle startBtnStyle = new TextButtonStyle();
-		startBtnStyle.font = AssetLoader.font;
-		TextButton startBtn = new TextButton(START_GAME_LABEL, startBtnStyle);
+		TextButton startBtn = new TextButton(START_GAME_LABEL, AssetLoader.skin);
 		startBtn.padLeft(-60);
 		startBtn.addAction(Actions.moveBy(30, 0, .3f));
 		startBtn.addListener(new ClickListener() {
@@ -110,9 +107,7 @@ public class MenuScreen extends ScreenAdapter {
 			}
 		});
 		
-		TextButtonStyle exitBtnStyle = new TextButtonStyle();
-		exitBtnStyle.font = AssetLoader.font;
-		TextButton exitBtn = new TextButton(EXIT_GAME_LABEL, exitBtnStyle);
+		TextButton exitBtn = new TextButton(EXIT_GAME_LABEL, AssetLoader.skin);
 		exitBtn.padLeft(60);
 		exitBtn.addAction(Actions.moveBy(-30, 0, .3f));
 		exitBtn.addListener(new ClickListener() {

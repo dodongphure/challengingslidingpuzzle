@@ -2,15 +2,12 @@ package com.pddgames.challengingslidingpuzzle.objects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
+import com.badlogic.gdx.utils.Align;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 
 /**
@@ -20,26 +17,36 @@ import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
  */
 public class Block extends Widget {
 	
-	private static final int MOVE_VELOCITY = 520;
-
 	private float size;
 	private Label label;
 	private int number;
+	private boolean isEmptyBlock = false;
 	
 	private ShapeRenderer shapeRender;
-	private Batch batch;
 	
+	/**
+	 * Generate a rounded Block with number.
+	 * @param size
+	 * @param number
+	 */
 	public Block(float size, int number) {
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = AssetLoader.font;
-		label = new Label(String.valueOf(number), labelStyle);
+		label = new Label(String.valueOf(number), AssetLoader.skin);
 		label.setAlignment(Align.center);
 		
 		this.size = size;
 		this.number = number;
 		
 		shapeRender = new ShapeRenderer();
-		batch = new SpriteBatch();// create a new SpriteBatch to draw number.
+	}
+	
+	/**
+	 * Generate an empty Block.
+	 */
+	public Block(float size) {
+		this.isEmptyBlock = true;
+		this.size = size;
+		
+		shapeRender = new ShapeRenderer();
 	}
 	
 	/**
@@ -82,17 +89,22 @@ public class Block extends Widget {
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		batch.end(); // Must end batch first because it is already start in Stage.draw() and in order to use ShapeRenderer.
+		
 		// Draw rounded block by using ShapeRender.
 		shapeRender.begin(ShapeType.Filled);
 		shapeRender.setColor(1, 1, 1, 1);
 		drawRoundedBlock(getX(), getY(), getWidth(), getHeight(), 4);
 		shapeRender.end();
 		
+		batch.begin(); // After that, batch must be started again.
+		if(isEmptyBlock) {
+			return;
+		}
+		
 		label.setColor(Color.BLACK);
 		label.setBounds(getX(), getY(), getWidth(), getHeight());
-		this.batch.begin();
-		label.draw(this.batch, parentAlpha);
-		this.batch.end();
+		label.draw(batch, parentAlpha);
 	}
 	
 	private void drawRoundedBlock(float x, float y, float width, float height, float radius) {

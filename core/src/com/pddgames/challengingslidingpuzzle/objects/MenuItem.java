@@ -1,5 +1,6 @@
 package com.pddgames.challengingslidingpuzzle.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.pddgames.challengingslidingpuzzle.screens.GameScreen;
@@ -27,7 +28,7 @@ public class MenuItem {
 	}
 	
 	public void update(float delta) {
-		float expectedXPosition = GameScreen.GAME_WIDTH / 2 - MENU_ITEM_WIDTH / 2;
+		float expectedXPosition = Gdx.graphics.getWidth() / 2 - MENU_ITEM_WIDTH / 2;
 		if(this.position.x < expectedXPosition) {
 			this.position.add(delta * MENU_ITEM_MOVING_SPEED, 0);
 			if(this.position.x >= expectedXPosition) {

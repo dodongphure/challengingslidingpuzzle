@@ -3,12 +3,17 @@ package com.pddgames.challengingslidingpuzzle.objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
+
 /**
  * 
  * @author dodongphu
  *
  */
-public class RecordingData {
+public class RecordingData extends Table {
 	
 	private class TimeScheduler extends TimerTask {
 		
@@ -39,6 +44,18 @@ public class RecordingData {
 	private static Timer timer;
 	private static TimeScheduler timerTask;
 	private int movingCount;
+	private Label timeLabel;
+	private Label moveLabel;
+	
+	private static final String TIME = "Time: ";
+	private static final String MOVE = "Move: ";
+	
+	public RecordingData() {
+		timeLabel = new Label(TIME, AssetLoader.skin);
+		add(timeLabel);
+		moveLabel = new Label(MOVE, AssetLoader.skin);
+		add(moveLabel);
+	}
 	
 	public void start() {
 		timer = new Timer();
@@ -56,6 +73,13 @@ public class RecordingData {
 		timer.scheduleAtFixedRate(timerTask, MILISECONDS_PERIOD, MILISECONDS_PERIOD);
 	}
 	
+	@Override
+	public void draw(Batch batch, float parentAlpha) {
+		timeLabel.setText(TIME + timerTask.getMinute() + ":" + timerTask.getSecond());
+		moveLabel.setText(MOVE + movingCount);
+		super.draw(batch, parentAlpha);
+	}
+
 	public void inscreaseMovingCount() {
 		movingCount++;
 	}
