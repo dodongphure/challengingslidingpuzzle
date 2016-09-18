@@ -26,6 +26,7 @@ public class Block extends Widget {
 	
 	/**
 	 * Generate a rounded Block with number.
+	 * If <b>number < 0</b>, this block is considered <b>empty (not visible)</b>.
 	 * @param size
 	 * @param number
 	 */
@@ -37,16 +38,10 @@ public class Block extends Widget {
 		this.number = number;
 		
 		shapeRender = new ShapeRenderer();
-	}
-	
-	/**
-	 * Generate an empty Block.
-	 */
-	public Block(float size) {
-		this.isEmptyBlock = true;
-		this.size = size;
 		
-		shapeRender = new ShapeRenderer();
+		if(number < 0) {
+			this.isEmptyBlock = true;
+		}
 	}
 	
 	/**
@@ -136,6 +131,10 @@ public class Block extends Widget {
 	
 	public int getNumber() {
 		return this.number;
+	}
+	
+	public void setNumber(int number) {
+		this.number = number;
 	}
 
 }

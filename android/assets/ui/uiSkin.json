@@ -11,10 +11,12 @@
 		default-font: { file: font/font.fnt }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
-		default: { font: default-font, fontColor: red }
+		default: { font: default-font, fontColor: black },
+		dialog: { font: default-font, fontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		default: { font: default-font, pressedOffsetX: 1, pressedOffsetY: -1 }
+		dialog: { font: default-font, fontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
 		default: { fontColorUnselected: white, fontColorSelected: black }
@@ -26,6 +28,7 @@
 		default: { font: default-font, fontColor: black, messageFontColor: gray }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-		default: { titleFont: default-font, titleFontColor: black }
+		default: { titleFont: default-font, titleFontColor: black },
+		dialog: { titleFont: default-font, titleFontColor: red}
 	}
 }

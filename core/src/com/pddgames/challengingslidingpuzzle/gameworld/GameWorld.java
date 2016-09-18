@@ -51,7 +51,7 @@ public class GameWorld extends Table {
 				
 				if(i == BLOCKS_NUM_PER_ROW-1 && j == BLOCKS_NUM_PER_ROW-1) {
 					// We do not draw the bottom-right block.
-					emptyBlock = new Block(blockSize);
+					emptyBlock = new Block(blockSize, -1);
 					blockCell = add(emptyBlock);
 				} else {
 					Block block = new Block(blockSize, randomNumbers.get(count));
@@ -115,6 +115,15 @@ public class GameWorld extends Table {
 				 .boxed().collect(Collectors.toList());
 		 Collections.shuffle(numbers);
 		 return numbers;
+	}
+	
+	public void resetData() {
+		List<Integer> randomNumbers = getRandomNumbers();
+		for (int i=0; i<cells.size - 1; i++) {
+			((Block) cells.get(i).getActor()).setNumber(randomNumbers.get(i));
+		}
+		// The last block is an empty block.
+		((Block) cells.get(cells.size - 1).getActor()).setNumber(-1);
 	}
 		
 	/*public void update(OrthographicCamera camera, float delta) {

@@ -19,9 +19,14 @@ public class RecordingData extends Table {
 		
 		private int second;
 		private int minute;
+		private boolean isPause = false;
 
 		@Override
 		public void run() {
+			if(isPause) {
+				return;
+			}
+			
 			this.second++;
 			if(this.second == 60) {
 				this.second = 0;
@@ -65,12 +70,18 @@ public class RecordingData extends Table {
 	}
 	
 	public void pause() {
-		timer.cancel();
+		timerTask.isPause = true;
 	}
 	
 	public void resume() {
-		timer = new Timer();
-		timer.scheduleAtFixedRate(timerTask, MILISECONDS_PERIOD, MILISECONDS_PERIOD);
+		timerTask.isPause = false;
+	}
+	
+	public void resetData() {
+		timerTask.isPause = false;
+		timerTask.minute = 0;
+		timerTask.second = 0;
+		movingCount = 0;
 	}
 	
 	@Override
@@ -92,7 +103,7 @@ public class RecordingData extends Table {
 		return timerTask.getMinute();
 	}
 	
-	public String getMovingCount() {
-		return movingCount + "";
+	public int getMovingCount() {
+		return movingCount;
 	}
 }

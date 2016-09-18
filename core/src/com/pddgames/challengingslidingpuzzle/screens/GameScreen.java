@@ -8,11 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.pddgames.challengingslidingpuzzle.gameworld.GameWorld;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
+import com.pddgames.challengingslidingpuzzle.helpers.DialogProperty;
 import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
 
 /**
@@ -29,16 +31,9 @@ public class GameScreen extends ScreenAdapter {
 	private Stage stage;
 	private Table table;
 	private RecordingData recordingData;
-	private GameState gameState;
-	
-	private enum GameState {
-		NEW,
-		PAUSED,
-		PLAYED
-	}
+	private GameWorld gameWorld;
 	
 	public GameScreen() {
-		gameState = GameState.NEW;
 	}
 
 	@Override
@@ -71,7 +66,7 @@ public class GameScreen extends ScreenAdapter {
 		recordingData.start();
 		table.add(recordingData).colspan(3).row();
 		
-		GameWorld gameWorld = new GameWorld(recordingData);
+		gameWorld = new GameWorld(recordingData);
 		table.add(gameWorld).expand().colspan(3);
 
 		initializeButtons();
@@ -87,7 +82,25 @@ public class GameScreen extends ScreenAdapter {
 		backBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+				recordingData.pause();
+				if(recordingData.getMovingCount() > 0) {// Game is already played -> Show confirm pop-up when back to main Menu.
+					Dialog dialog = new Dialog(DialogProperty.CONFIRM, AssetLoader.skin, "dialog") {
+						@Override
+						protected void result(Object object) {
+							if(object.equals(1)) {// Press OK (quit game).
+								((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+							} else {
+								recordingData.resume();
+							}
+						}
+					};
+					dialog.text("Game is running. Are you sure to quit?", AssetLoader.skin.get("dialog", LabelStyle.class));
+					dialog.button(DialogProperty.CANCEL, 0, AssetLoader.skin.get("dialog", TextButton.TextButtonStyle.class));
+					dialog.button(DialogProperty.OK, 1, AssetLoader.skin.get("dialog", TextButton.TextButtonStyle.class));
+					dialog.show(stage);
+				} else {
+					((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
+				}
 			}
 		});
 		table.add(backBtn);
@@ -97,9 +110,14 @@ public class GameScreen extends ScreenAdapter {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				recordingData.pause();
-				Dialog dialog = new Dialog("TEST", AssetLoader.skin);
-				dialog.text("Paused!");
-				dialog.button("OK");
+				Dialog dialog = new Dialog(DialogProperty.INFO, AssetLoader.skin, "dialog") {
+					@Override
+					protected void result(Object object) {
+						recordingData.resume();
+					}
+				};
+				dialog.text("Game is paused!", AssetLoader.skin.get("dialog", LabelStyle.class));
+				dialog.button(DialogProperty.RESUME, null, AssetLoader.skin.get("dialog", TextButton.TextButtonStyle.class));
 				dialog.show(stage);
 			}
 		});
@@ -109,7 +127,27 @@ public class GameScreen extends ScreenAdapter {
 		resetBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				System.out.println(2);
+				recordingData.pause();
+				if(recordingData.getMovingCount() > 0) {// Game is already played -> Show confirm pop-up when reset the game.
+					Dialog dialog = new Dialog(DialogProperty.CONFIRM, AssetLoader.skin, "dialog") {
+						@Override
+						protected void result(Object object) {
+							if(object.equals(1)) {// Press OK (reset game).
+								recordingData.resetData();
+								gameWorld.resetData();
+							} else {
+								recordingData.resume();
+							}
+						}
+					};
+					dialog.text("Game is running. Are you sure to reset?", AssetLoader.skin.get("dialog", LabelStyle.class));
+					dialog.button(DialogProperty.CANCEL, 0, AssetLoader.skin.get("dialog", TextButton.TextButtonStyle.class));
+					dialog.button(DialogProperty.OK, 1, AssetLoader.skin.get("dialog", TextButton.TextButtonStyle.class));
+					dialog.show(stage);
+				} else {
+					recordingData.resetData();
+					gameWorld.resetData();
+				}
 			}
 		});
 		table.add(resetBtn);
