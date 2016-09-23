@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Align;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
@@ -17,10 +16,13 @@ import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
  */
 public class Block extends Widget {
 	
+	/**
+	 * Indicate the order of block in GameWord. When block is moved, orderNumber value should be changed.
+	 */
+	private int orderNumber;
 	private float size;
 	private Label label;
 	private int number;
-	private boolean isEmptyBlock = false;
 	
 	private ShapeRenderer shapeRender;
 	
@@ -30,18 +32,15 @@ public class Block extends Widget {
 	 * @param size
 	 * @param number
 	 */
-	public Block(float size, int number) {
+	public Block(int orderNumber, float size, int number) {
 		label = new Label(String.valueOf(number), AssetLoader.skin);
 		label.setAlignment(Align.center);
 		
+		this.orderNumber = orderNumber;
 		this.size = size;
 		this.number = number;
 		
 		shapeRender = new ShapeRenderer();
-		
-		if(number < 0) {
-			this.isEmptyBlock = true;
-		}
 	}
 	
 	/**
@@ -93,11 +92,15 @@ public class Block extends Widget {
 		shapeRender.end();
 		
 		batch.begin(); // After that, batch must be started again.
-		if(isEmptyBlock) {
+		
+		// We do not draw negative Block's number.
+		if(number < 0) {
 			return;
 		}
 		
 		label.setColor(Color.BLACK);
+		// need to update number when each time draw block's number (in case of pressing Reset button).
+		label.setText(number + "");
 		label.setBounds(getX(), getY(), getWidth(), getHeight());
 		label.draw(batch, parentAlpha);
 	}
@@ -129,6 +132,14 @@ public class Block extends Widget {
 		return this.size;
 	}
 	
+	public int getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(int orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
 	public int getNumber() {
 		return this.number;
 	}
@@ -136,5 +147,5 @@ public class Block extends Widget {
 	public void setNumber(int number) {
 		this.number = number;
 	}
-
+	
 }

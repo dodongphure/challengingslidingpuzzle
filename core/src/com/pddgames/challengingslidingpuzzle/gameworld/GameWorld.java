@@ -43,54 +43,59 @@ public class GameWorld extends Table {
 		float blockSize = (Gdx.graphics.getWidth() - ((BLOCKS_NUM_PER_ROW-1) * GAP_BETWEEN_BLOCKS)) / BLOCKS_NUM_PER_ROW;
 		List<Integer> randomNumbers = getRandomNumbers();
 		
-		// Draw blocks bottom up, from left to right.
-		int count = 0;
+		// Draw blocks up - bottom, from left to right.
 		for(int i=0; i < BLOCKS_NUM_PER_ROW; i++) {
 			for(int j=0; j < BLOCKS_NUM_PER_ROW; j++) {
+				int orderNumber = i*BLOCKS_NUM_PER_ROW + j;
 				Cell<Block> blockCell;
+				Block block;
 				
-				if(i == BLOCKS_NUM_PER_ROW-1 && j == BLOCKS_NUM_PER_ROW-1) {
-					// We do not draw the bottom-right block.
-					emptyBlock = new Block(blockSize, -1);
-					blockCell = add(emptyBlock);
+				if(i == BLOCKS_NUM_PER_ROW-1 && j == BLOCKS_NUM_PER_ROW-1) {// This is an empty block.
+					block = new Block(orderNumber + 1, blockSize, -1);
+					emptyBlock = block;
 				} else {
-					Block block = new Block(blockSize, randomNumbers.get(count));
-					block.addListener(new ClickListener() {
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							float distance = blockSize + GAP_BETWEEN_BLOCKS;
-							if(Math.round(block.getX()) == Math.round(emptyBlock.getX())) {
-								if(Math.round((block.getY() + distance)) == Math.round(emptyBlock.getY())) {// Move up.
-									emptyBlock.setPosition(block.getX(), block.getY());
-									block.addAction(Actions.moveBy(0, distance, BLOCK_MOVING_TIME));
-									recordingData.inscreaseMovingCount();
-								} else if(Math.round((block.getY() - distance)) == Math.round(emptyBlock.getY())) {//Move down.
-									emptyBlock.setPosition(block.getX(), block.getY());
-									block.addAction(Actions.moveBy(0, -distance, BLOCK_MOVING_TIME));
-									recordingData.inscreaseMovingCount();
-								}
-							} else if(Math.round(block.getY()) == Math.round(emptyBlock.getY())) {
-								if(Math.round((block.getX() + distance))== Math.round(emptyBlock.getX())) {// Move right.
-									emptyBlock.setPosition(block.getX(), block.getY());
-									block.addAction(Actions.moveBy(distance, 0, BLOCK_MOVING_TIME));
-									recordingData.inscreaseMovingCount();
-								} else if(Math.round((block.getX() - distance)) == Math.round(emptyBlock.getX())) {// Move left.
-									emptyBlock.setPosition(block.getX(), block.getY());
-									block.addAction(Actions.moveBy(-distance, 0, BLOCK_MOVING_TIME));
-									recordingData.inscreaseMovingCount();
-								}
+					block = new Block(orderNumber + 1, blockSize, randomNumbers.get(orderNumber));
+				}
+				
+				block.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						float distance = blockSize + GAP_BETWEEN_BLOCKS;
+						if(Math.round(block.getX()) == Math.round(emptyBlock.getX())) {
+							if(Math.round((block.getY() + distance)) == Math.round(emptyBlock.getY())) {// Move up.
+								emptyBlock.setPosition(block.getX(), block.getY());
+								block.addAction(Actions.moveBy(0, distance, BLOCK_MOVING_TIME));
+								swapOrderNumber(emptyBlock, block);
+								recordingData.inscreaseMovingCount();
+							} else if(Math.round((block.getY() - distance)) == Math.round(emptyBlock.getY())) {//Move down.
+								emptyBlock.setPosition(block.getX(), block.getY());
+								block.addAction(Actions.moveBy(0, -distance, BLOCK_MOVING_TIME));
+								swapOrderNumber(emptyBlock, block);
+								recordingData.inscreaseMovingCount();
 							}
-							
-							// Check for finishing game.
-							for(int i=0; i<cells.size-1; i++) {
-								if(((Block) cells.get(i).getActor()).getNumber() == i+1) {
-									// TODO
-								}
+						} else if(Math.round(block.getY()) == Math.round(emptyBlock.getY())) {
+							if(Math.round((block.getX() + distance))== Math.round(emptyBlock.getX())) {// Move right.
+								emptyBlock.setPosition(block.getX(), block.getY());
+								block.addAction(Actions.moveBy(distance, 0, BLOCK_MOVING_TIME));
+								swapOrderNumber(emptyBlock, block);
+								recordingData.inscreaseMovingCount();
+							} else if(Math.round((block.getX() - distance)) == Math.round(emptyBlock.getX())) {// Move left.
+								emptyBlock.setPosition(block.getX(), block.getY());
+								block.addAction(Actions.moveBy(-distance, 0, BLOCK_MOVING_TIME));
+								swapOrderNumber(emptyBlock, block);
+								recordingData.inscreaseMovingCount();
 							}
 						}
-					});
-					blockCell = add(block);
-				}
+						
+						// Check for finishing game.
+						for(int i=0; i<cells.size-1; i++) {
+							if(((Block) cells.get(i).getActor()).getNumber() == i+1) {
+								// TODO
+							}
+						}
+					}
+				});
+				blockCell = add(block);
 				
 				// add spaces between blocks.
 				if(i < BLOCKS_NUM_PER_ROW - 1) {
@@ -99,11 +104,16 @@ public class GameWorld extends Table {
 				if(j < BLOCKS_NUM_PER_ROW - 1) {
 					blockCell.padRight(GAP_BETWEEN_BLOCKS);
 				}
-				count++;
 			}
 			row();
 		}
 		cells = getCells();
+	}
+	
+	private void swapOrderNumber(Block blockA, Block blockB) {
+		int orderNumberA = blockA.getOrderNumber();
+		blockA.setOrderNumber(blockB.getOrderNumber());
+		blockB.setOrderNumber(orderNumberA);
 	}
 	
 	/**
@@ -119,11 +129,17 @@ public class GameWorld extends Table {
 	
 	public void resetData() {
 		List<Integer> randomNumbers = getRandomNumbers();
-		for (int i=0; i<cells.size - 1; i++) {
-			((Block) cells.get(i).getActor()).setNumber(randomNumbers.get(i));
+		int count = 0;
+		for (int i=0; i<cells.size; i++) {
+			Block block = (Block) cells.get(i).getActor();
+			if(block.getOrderNumber() == BLOCKS_NUM_PER_ROW * BLOCKS_NUM_PER_ROW) {// The last block.
+				block.setNumber(-1);// This is the empty block.
+				emptyBlock = block;
+			} else {
+				block.setNumber(randomNumbers.get(count));
+				count++;
+			}
 		}
-		// The last block is an empty block.
-		((Block) cells.get(cells.size - 1).getActor()).setNumber(-1);
 	}
 		
 	/*public void update(OrthographicCamera camera, float delta) {
