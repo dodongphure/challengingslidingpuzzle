@@ -57,6 +57,7 @@ public class GameScreen extends ScreenAdapter {
 		//TODO: optimize using Singleton.
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		stage.addActor(AssetLoader.background);
 		
 		table = new Table();
 		table.setDebug(true);

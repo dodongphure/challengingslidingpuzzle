@@ -27,7 +27,6 @@ public class GameWorld extends Table {
 	private static final int BLOCKS_NUM_PER_ROW = 5; // This is also number of blocks per column.
 	private static final int GAP_BETWEEN_BLOCKS = 5;
 	private static final float BLOCK_MOVING_TIME = .2f;
-	private static final int GAME_TIME_LIMIT = 60; // in minute.
 	
 	private Block emptyBlock;
 	@SuppressWarnings("rawtypes")
@@ -117,7 +116,7 @@ public class GameWorld extends Table {
 	}
 	
 	/**
-	 * Get random numbers for all blocks
+	 * Get list of random numbers for all blocks
 	 * @return
 	 */
 	private List<Integer> getRandomNumbers() {

@@ -3,16 +3,13 @@ package com.pddgames.challengingslidingpuzzle.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
-import com.pddgames.challengingslidingpuzzle.objects.MenuItem;
 
 /**
  * 
@@ -25,8 +22,6 @@ public class MenuScreen extends ScreenAdapter {
 	private static final String START_GAME_LABEL = "START";
 	private static final String SETTINGS_LABEL = "SETTINGS";
 	private static final String EXIT_GAME_LABEL = "EXIT";
-	
-	private MenuItem[] menuItems;
 	
 	private Stage stage;
 	private Table table;
@@ -48,17 +43,9 @@ public class MenuScreen extends ScreenAdapter {
 	public void render(float delta) {
 		// Fill the entire screen with black, to prevent potential flickering.
 		Gdx.gl.glClearColor(100/255f, 100/255f, 100/255f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		stage.act(delta);
 		stage.draw();
-		
-		//tweenManager.update(delta);
-		
-		/*for(MenuItem menuItem : menuItems) {
-			menuItem.update(delta);
-		}
-		drawMenuItems();*/
 	}
 	
 	@Override
@@ -66,6 +53,7 @@ public class MenuScreen extends ScreenAdapter {
 		//TODO: optimize using Singleton.
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
+		stage.addActor(AssetLoader.background);
 	
 		table = new Table();
 		table.setFillParent(true);

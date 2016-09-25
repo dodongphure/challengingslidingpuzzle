@@ -15,7 +15,7 @@
 		dialog: { font: default-font, fontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-		default: { font: default-font, pressedOffsetX: 1, pressedOffsetY: -1 }
+		default: { font: default-font, fontColor: black, pressedOffsetX: 1, pressedOffsetY: -1 }
 		dialog: { font: default-font, fontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
