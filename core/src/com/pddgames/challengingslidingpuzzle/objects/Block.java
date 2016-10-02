@@ -4,9 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 
 /**
@@ -23,6 +25,7 @@ public class Block extends Widget {
 	private float size;
 	private Label label;
 	private int number;
+	private Image backgroundImage;
 	
 	private ShapeRenderer shapeRender;
 	
@@ -39,6 +42,9 @@ public class Block extends Widget {
 		this.orderNumber = orderNumber;
 		this.size = size;
 		this.number = number;
+		
+		this.backgroundImage = AssetLoader.blockBackground;
+		this.backgroundImage.setScaling(Scaling.fit);
 		
 		shapeRender = new ShapeRenderer();
 	}
@@ -83,20 +89,22 @@ public class Block extends Widget {
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		batch.end(); // Must end batch first because it is already start in Stage.draw() and in order to use ShapeRenderer.
-		
+		// Must end batch first because it is already start in Stage.draw() and in order to use ShapeRenderer.
+		batch.end();
 		// Draw rounded block by using ShapeRender.
 		shapeRender.begin(ShapeType.Filled);
 		shapeRender.setColor(1, 1, 1, 1);
 		drawRoundedBlock(getX(), getY(), getWidth(), getHeight(), 4);
 		shapeRender.end();
-		
 		batch.begin(); // After that, batch must be started again.
 		
 		// We do not draw negative Block's number.
 		if(number < 0) {
 			return;
 		}
+		
+		this.backgroundImage.setBounds(getX(), getY(), getWidth(), getHeight());
+		this.backgroundImage.draw(batch, parentAlpha);
 		
 		label.setColor(Color.BLACK);
 		// need to update number when each time draw block's number (in case of pressing Reset button).
