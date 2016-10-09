@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton.ImageTextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -24,9 +26,7 @@ import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
  */
 public class GameScreen extends ScreenAdapter {
 	
-	private static final String BACK_BTN = "B";
-	private static final String PAUSE_BTN = "P";
-	private static final String RESET_BTN = "R";
+	private static final int BUTTON_SIZE = 60;
 	
 	private Stage stage;
 	private Table table;
@@ -60,7 +60,7 @@ public class GameScreen extends ScreenAdapter {
 		stage.addActor(AssetLoader.background);
 		
 		table = new Table();
-		table.setDebug(true);
+		//table.setDebug(true);
 		table.setFillParent(true);
 		
 		recordingData = new RecordingData();
@@ -79,7 +79,7 @@ public class GameScreen extends ScreenAdapter {
 	private void initializeButtons() {
 		table.row().padBottom(20);
 		
-		TextButton backBtn = new TextButton(BACK_BTN, AssetLoader.skin);
+		ImageTextButton backBtn = new ImageTextButton("", AssetLoader.skin.get("backBtn", ImageTextButtonStyle.class));
 		backBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -104,9 +104,9 @@ public class GameScreen extends ScreenAdapter {
 				}
 			}
 		});
-		table.add(backBtn);
+		table.add(backBtn).size(BUTTON_SIZE);
 		
-		TextButton pauseBtn = new TextButton(PAUSE_BTN, AssetLoader.skin);
+		ImageTextButton pauseBtn = new ImageTextButton("", AssetLoader.skin.get("pauseBtn", ImageTextButtonStyle.class));
 		pauseBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -122,9 +122,9 @@ public class GameScreen extends ScreenAdapter {
 				dialog.show(stage);
 			}
 		});
-		table.add(pauseBtn);
+		table.add(pauseBtn).size(BUTTON_SIZE);
 		
-		TextButton resetBtn = new TextButton(RESET_BTN, AssetLoader.skin);
+		ImageTextButton resetBtn = new ImageTextButton("", AssetLoader.skin.get("resetBtn", ImageTextButtonStyle.class));
 		resetBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -151,7 +151,7 @@ public class GameScreen extends ScreenAdapter {
 				}
 			}
 		});
-		table.add(resetBtn);
+		table.add(resetBtn).size(BUTTON_SIZE);
 	}
 
 	@Override

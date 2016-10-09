@@ -4,8 +4,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Scaling;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 
 /**
@@ -45,21 +47,27 @@ public class RecordingData extends Table {
 	}
 	
 	private static final long MILISECONDS_PERIOD = 1000;
+	private static final int PREF_WIDTH = 300;
+	private static final int PREF_HEIGHT = 50;
 	
 	private static Timer timer;
 	private static TimeScheduler timerTask;
 	private int movingCount;
 	private Label timeLabel;
 	private Label moveLabel;
+	private Image background;
 	
 	private static final String TIME = "Time: ";
 	private static final String MOVE = "Move: ";
 	
 	public RecordingData() {
+		background = AssetLoader.recordingDataPanel;
+		
 		timeLabel = new Label(TIME, AssetLoader.skin);
 		add(timeLabel);
 		moveLabel = new Label(MOVE, AssetLoader.skin);
 		add(moveLabel);
+		
 	}
 	
 	public void start() {
@@ -86,9 +94,22 @@ public class RecordingData extends Table {
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		background.setBounds(getX(), getY(), getWidth(), getHeight());
+		background.draw(batch, parentAlpha);
+		
 		timeLabel.setText(TIME + timerTask.getMinute() + ":" + timerTask.getSecond());
 		moveLabel.setText(MOVE + movingCount);
 		super.draw(batch, parentAlpha);
+	}
+
+	@Override
+	public float getPrefWidth() {
+		return PREF_WIDTH;
+	}
+
+	@Override
+	public float getPrefHeight() {
+		return PREF_HEIGHT;
 	}
 
 	public void inscreaseMovingCount() {
