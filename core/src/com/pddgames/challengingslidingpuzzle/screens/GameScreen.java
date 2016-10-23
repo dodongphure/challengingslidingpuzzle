@@ -26,7 +26,7 @@ import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
  */
 public class GameScreen extends ScreenAdapter {
 	
-	private static final int BUTTON_SIZE = 60;
+	private static final int BUTTON_SIZE = 50;
 	
 	private Stage stage;
 	private Table table;
@@ -54,32 +54,34 @@ public class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void show() {
-		//TODO: optimize using Singleton.
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		stage.addActor(AssetLoader.background);
 		
 		table = new Table();
-		//table.setDebug(true);
+//		table.setDebug(true);
 		table.setFillParent(true);
 		
 		recordingData = new RecordingData();
 		recordingData.start();
+		recordingData.addAction(Actions.moveBy(0, -8, .3f));
 		table.add(recordingData).colspan(3).row();
 		
 		gameWorld = new GameWorld(recordingData);
+		gameWorld.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f)));
 		table.add(gameWorld).expand().colspan(3);
 
 		initializeButtons();
 		
 		stage.addActor(table);
-		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f)));
+//		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f)));
 	}
 	
 	private void initializeButtons() {
-		table.row().padBottom(20);
+		table.row().padBottom(10);
 		
 		ImageTextButton backBtn = new ImageTextButton("", AssetLoader.skin.get("backBtn", ImageTextButtonStyle.class));
+		backBtn.addAction(Actions.moveBy(0, 10, .3f));
 		backBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -107,6 +109,7 @@ public class GameScreen extends ScreenAdapter {
 		table.add(backBtn).size(BUTTON_SIZE);
 		
 		ImageTextButton pauseBtn = new ImageTextButton("", AssetLoader.skin.get("pauseBtn", ImageTextButtonStyle.class));
+		pauseBtn.addAction(Actions.moveBy(0, 10, .3f));
 		pauseBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -125,6 +128,7 @@ public class GameScreen extends ScreenAdapter {
 		table.add(pauseBtn).size(BUTTON_SIZE);
 		
 		ImageTextButton resetBtn = new ImageTextButton("", AssetLoader.skin.get("resetBtn", ImageTextButtonStyle.class));
+		resetBtn.addAction(Actions.moveBy(0, 10, .3f));
 		resetBtn.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {

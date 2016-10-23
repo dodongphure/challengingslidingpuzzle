@@ -2,8 +2,6 @@ package com.pddgames.challengingslidingpuzzle.objects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Widget;
@@ -27,8 +25,6 @@ public class Block extends Widget {
 	private int number;
 	private Image backgroundImage;
 	
-	private ShapeRenderer shapeRender;
-	
 	/**
 	 * Generate a rounded Block with number.
 	 * If <b>number < 0</b>, this block is considered <b>empty (not visible)</b>.
@@ -45,59 +41,10 @@ public class Block extends Widget {
 		
 		this.backgroundImage = AssetLoader.blockBackground;
 		this.backgroundImage.setScaling(Scaling.fit);
-		
-		shapeRender = new ShapeRenderer();
 	}
-	
-	/**
-	 * 
-	 * @param delta
-	 * @return true if this Block is moving, else return false
-	 */
-	/*public boolean update(float delta) {
-		if(newPosition.x == position.x) {
-			if(newPosition.y > position.y) {
-				position.add(0, delta * MOVE_VELOCITY);// Move Up.
-				if(position.y > newPosition.y) {
-					position.y = newPosition.y;
-				}
-				return true;
-			} else if(newPosition.y < position.y) {
-				position.add(0, -delta * MOVE_VELOCITY);// Move Down.
-				if(position.y < newPosition.y) {
-					position.y = newPosition.y;
-				}
-				return true;
-			}
-		} else if(newPosition.y == position.y) {
-			if(newPosition.x > position.x) {
-				position.add(delta * MOVE_VELOCITY, 0);// Move Right
-				if(position.x > newPosition.x) {
-					position.x = newPosition.x;
-				}
-				return true;
-			} else if(newPosition.x < position.x) {
-				position.add(-delta * MOVE_VELOCITY, 0);// Move Left
-				if(position.x < newPosition.x) {
-					position.x = newPosition.x;
-				}
-				return true;
-			}
-		}
-		return false;
-	}*/
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		// Must end batch first because it is already start in Stage.draw() and in order to use ShapeRenderer.
-		batch.end();
-		// Draw rounded block by using ShapeRender.
-		shapeRender.begin(ShapeType.Filled);
-		shapeRender.setColor(1, 1, 1, 1);
-		drawRoundedBlock(getX(), getY(), getWidth(), getHeight(), 4);
-		shapeRender.end();
-		batch.begin(); // After that, batch must be started again.
-		
 		// We do not draw negative Block's number.
 		if(number < 0) {
 			return;
@@ -113,7 +60,7 @@ public class Block extends Widget {
 		label.draw(batch, parentAlpha);
 	}
 	
-	private void drawRoundedBlock(float x, float y, float width, float height, float radius) {
+	/*private void drawRoundedBlock(float x, float y, float width, float height, float radius) {
 		// Central rectangle
 		shapeRender.rect(x + radius, y + radius, width - 2*radius, height - 2*radius);
 
@@ -128,7 +75,7 @@ public class Block extends Widget {
 		shapeRender.arc(x + width - radius, y + radius, radius, 270f, 90f);
 		shapeRender.arc(x + width - radius, y + height - radius, radius, 0f, 90f);
 		shapeRender.arc(x + radius, y + height - radius, radius, 90f, 90f);
-	}
+	}*/
 
 	@Override
 	public float getPrefWidth() {

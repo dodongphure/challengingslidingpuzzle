@@ -4,10 +4,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Scaling;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 
 /**
@@ -55,18 +54,21 @@ public class RecordingData extends Table {
 	private int movingCount;
 	private Label timeLabel;
 	private Label moveLabel;
-	private Image background;
 	
 	private static final String TIME = "Time: ";
 	private static final String MOVE = "Move: ";
 	
 	public RecordingData() {
-		background = AssetLoader.recordingDataPanel;
+		setBackground(AssetLoader.recordingDataPanel);
 		
-		timeLabel = new Label(TIME, AssetLoader.skin);
-		add(timeLabel);
-		moveLabel = new Label(MOVE, AssetLoader.skin);
-		add(moveLabel);
+		timeLabel = new Label(TIME, AssetLoader.skin.get("panel", LabelStyle.class));
+		timeLabel.setFontScale(.4f);
+		timeLabel.setLayoutEnabled(false);// make sure invalidateHierarchy() is not called when call setText().
+		add(timeLabel).width(150);
+		moveLabel = new Label(MOVE, AssetLoader.skin.get("panel", LabelStyle.class));
+		moveLabel.setFontScale(.4f);
+		moveLabel.setLayoutEnabled(false);
+		add(moveLabel).width(70);
 		
 	}
 	
@@ -94,11 +96,10 @@ public class RecordingData extends Table {
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		background.setBounds(getX(), getY(), getWidth(), getHeight());
-		background.draw(batch, parentAlpha);
-		
 		timeLabel.setText(TIME + timerTask.getMinute() + ":" + timerTask.getSecond());
+		timeLabel.layout();// draw new text.
 		moveLabel.setText(MOVE + movingCount);
+		moveLabel.layout();
 		super.draw(batch, parentAlpha);
 	}
 

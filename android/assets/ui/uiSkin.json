@@ -12,16 +12,18 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 		default: { font: default-font, fontColor: black },
+		panel: { font: panel-font, fontColor: black },
 		dialog: { font: default-font, fontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-		default: { font: default-font, fontColor: black, pressedOffsetX: 1, pressedOffsetY: -1 }
+		default: { font: default-font, fontColor: black, pressedOffsetX: 1, pressedOffsetY: -1 },
+		menu: { font: menu-font, fontColor: black, pressedOffsetX: 1, pressedOffsetY: -1 },
 		dialog: { font: default-font, fontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
-		backBtn: { font: default-font, fontColor: black, imageUp: backBtn }
-		resetBtn: { font: default-font, fontColor: black, imageUp: resetBtn }
-		pauseBtn: { font: default-font, fontColor: black, imageUp: pauseBtn }
+		backBtn: { font: default-font, fontColor: black, imageUp: backBtn },
+		resetBtn: { font: default-font, fontColor: black, imageUp: resetBtn },
+		pauseBtn: { font: default-font, fontColor: black, imageUp: pauseBtn },
 		dialog: { font: default-font, fontColor: red }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
