@@ -23,10 +23,10 @@ public class AssetLoader {
 	private static final String ATLAS = "ui/atlas.pack";
 	private static final String BACKGROUND_IMAGE = "img/white_brick_wall.png";
 	private static final String BLOCK_BACKGROUND = "img/block.png";
-	private static final String BACK_BUTTON = "img/backBtn.png";
-	private static final String PAUSE_BUTTON = "img/pauseBtn.png";
-	private static final String RESET_BUTTON = "img/resetBtn.png";
 	private static final String RECORDING_DATA_PANEL = "img/panel.png";
+	private static final String INFO_DIALOG = "img/dialog1.png";
+	private static final String CONFIRM_DIALOG = "img/dialog2.png";
+	
 	private static final String ADAM_WARREN_PRO_FONT = "font/adamwarrenpro.ttf";
 	private static final String MOTION_CONTROL_FONT = "font/MotionControl-Bold.otf";
 	
@@ -36,10 +36,9 @@ public class AssetLoader {
 	public static Skin skin;
 	public static Image background;
 	public static Image blockBackground;
-	public static Image backBtn;
-	public static Image pauseBtn;
-	public static Image resetBtn;
 	public static TextureRegionDrawable recordingDataPanel;
+	public static TextureRegionDrawable infoDialogBackground;
+	public static TextureRegionDrawable confirmDialogBackground;
 	
 	public static void load() {
 		//font.getData().setScale(0.5f);
@@ -61,17 +60,14 @@ public class AssetLoader {
 		imgTexture = new Texture(Gdx.files.internal(BLOCK_BACKGROUND));
 		blockBackground = new Image(imgTexture);
 		
-		imgTexture = new Texture(Gdx.files.internal(BACK_BUTTON));
-		backBtn = new Image(imgTexture);
-		
-		imgTexture = new Texture(Gdx.files.internal(PAUSE_BUTTON));
-		pauseBtn = new Image(imgTexture);
-		
-		imgTexture = new Texture(Gdx.files.internal(RESET_BUTTON));
-		resetBtn = new Image(imgTexture);
-		
 		imgTexture = new Texture(Gdx.files.internal(RECORDING_DATA_PANEL));
 		recordingDataPanel = new TextureRegionDrawable(new TextureRegion(imgTexture));
+		
+		imgTexture = new Texture(Gdx.files.internal(INFO_DIALOG));
+		infoDialogBackground = new TextureRegionDrawable(new TextureRegion(imgTexture));
+		
+		imgTexture = new Texture(Gdx.files.internal(CONFIRM_DIALOG));
+		confirmDialogBackground = new TextureRegionDrawable(new TextureRegion(imgTexture));
 	}
 	
 	private static BitmapFont createFont(String path) {
