@@ -72,6 +72,7 @@ public class GameScreen extends ScreenAdapter {
 		initializeButtons();
 		
 		stage.addActor(table);
+		AssetLoader.gamePlaySound.play();
 	}
 	
 	private void initializeButtons() {
@@ -97,6 +98,8 @@ public class GameScreen extends ScreenAdapter {
 				} else {
 					((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
 				}
+				
+				AssetLoader.buttonSound.play();
 			}
 		});
 		table.add(backBtn).size(BUTTON_SIZE);
@@ -113,6 +116,8 @@ public class GameScreen extends ScreenAdapter {
 						recordingData.resume();
 					}
 				};
+				
+				AssetLoader.buttonSound.play();
 			}
 		});
 		table.add(pauseBtn).size(BUTTON_SIZE);
@@ -139,6 +144,8 @@ public class GameScreen extends ScreenAdapter {
 					recordingData.resetData();
 					gameWorld.resetData();
 				}
+				
+				AssetLoader.buttonSound.play();
 			}
 		});
 		table.add(resetBtn).size(BUTTON_SIZE);

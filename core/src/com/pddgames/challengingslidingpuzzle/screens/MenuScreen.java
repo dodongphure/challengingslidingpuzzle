@@ -63,6 +63,8 @@ public class MenuScreen extends ScreenAdapter {
 		
 		stage.addActor(table);
 		stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(2f)));
+		
+		AssetLoader.gamePlaySound.stop();
 	}
 	
 	@Override
@@ -93,6 +95,8 @@ public class MenuScreen extends ScreenAdapter {
 							}
 						}
 					)));
+				
+				AssetLoader.menuSound.play();
 			}
 		});
 		
@@ -113,6 +117,8 @@ public class MenuScreen extends ScreenAdapter {
 							}
 						}))
 					));
+				
+				AssetLoader.menuSound.play();
 			}
 		});
 		

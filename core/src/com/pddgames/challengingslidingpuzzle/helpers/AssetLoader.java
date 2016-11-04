@@ -1,6 +1,8 @@
 package com.pddgames.challengingslidingpuzzle.helpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -26,6 +28,10 @@ public class AssetLoader {
 	private static final String RECORDING_DATA_PANEL = "img/panel.png";
 	private static final String INFO_DIALOG = "img/dialog1.png";
 	private static final String CONFIRM_DIALOG = "img/dialog2.png";
+	private static final String BLOCK_AUDIO = "audio/blockClicking.mp3";
+	private static final String BUTTON_AUDIO = "audio/buttonClicking.mp3";
+	private static final String MENU_AUDIO =  "audio/menuClicking.mp3";
+	private static final String PLAYING_AUDIO =  "audio/playing.mp3";
 	
 	private static final String ADAM_WARREN_PRO_FONT = "font/adamwarrenpro.ttf";
 	private static final String MOTION_CONTROL_FONT = "font/MotionControl-Bold.otf";
@@ -39,6 +45,11 @@ public class AssetLoader {
 	public static TextureRegionDrawable recordingDataPanel;
 	public static TextureRegionDrawable infoDialogBackground;
 	public static TextureRegionDrawable confirmDialogBackground;
+	
+	public static Sound blockSound;
+	public static Sound buttonSound;
+	public static Sound menuSound;
+	public static Music gamePlaySound;
 	
 	public static void load() {
 		//font.getData().setScale(0.5f);
@@ -68,6 +79,12 @@ public class AssetLoader {
 		
 		imgTexture = new Texture(Gdx.files.internal(CONFIRM_DIALOG));
 		confirmDialogBackground = new TextureRegionDrawable(new TextureRegion(imgTexture));
+		
+		blockSound = Gdx.audio.newSound(Gdx.files.internal(BLOCK_AUDIO));
+		buttonSound = Gdx.audio.newSound(Gdx.files.internal(BUTTON_AUDIO));
+		menuSound = Gdx.audio.newSound(Gdx.files.internal(MENU_AUDIO));
+		gamePlaySound = Gdx.audio.newMusic(Gdx.files.internal(PLAYING_AUDIO));
+		gamePlaySound.setLooping(true);
 	}
 	
 	private static BitmapFont createFont(String path) {
@@ -81,6 +98,10 @@ public class AssetLoader {
 	
 	public static void dispose() {
 		skin.dispose();
+		blockSound.dispose();
+		buttonSound.dispose();
+		menuSound.dispose();
+		gamePlaySound.dispose();
 	}
 
 }

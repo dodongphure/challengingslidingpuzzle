@@ -46,6 +46,7 @@ public class CustomDialog extends Dialog {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				hide();
+				AssetLoader.buttonSound.play();
 			}
 		});
 		this.getContentTable().addActor(closeDialogButton);
@@ -60,23 +61,11 @@ public class CustomDialog extends Dialog {
 		this.text(text);
 		
 		// Main button
-		TextButton firstButton = new TextButton("", AssetLoader.skin) {
-			@Override
-			public float getPrefWidth() {
-				return 50;
-			}
-		};
-		this.button(firstButton, 0);
+		this.button(createActionButton(), 0);
 		
 		// Second button
 		if(type == Type.CONFIRM) {
-			TextButton secondButton = new TextButton("", AssetLoader.skin) {
-				@Override
-				public float getPrefWidth() {
-					return 50;
-				}
-			};
-			this.button(secondButton, 1);
+			this.button(createActionButton(), 1);
 		}
 		this.getButtonTable().padTop(-50);
 		this.getButtonTable().padLeft(-20);
@@ -102,6 +91,22 @@ public class CustomDialog extends Dialog {
 	@Override
 	public float getPrefHeight() {
 		return 130;
+	}
+	
+	private TextButton createActionButton() {
+		TextButton button = new TextButton("", AssetLoader.skin) {
+			@Override
+			public float getPrefWidth() {
+				return 50;
+			}
+		};
+		button.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				AssetLoader.buttonSound.play();
+			}
+		});
+		return button;
 	}
 	
 }
