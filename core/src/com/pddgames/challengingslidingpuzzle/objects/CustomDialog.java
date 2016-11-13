@@ -20,6 +20,9 @@ public class CustomDialog extends Dialog {
 	
 	private TextButton closeDialogButton;
 	
+	public static final int STATUS_OK = 0;
+	public static final int STATUS_CANCEL = 0;
+	
 	public enum Type {
 		INFO,
 		CONFIRM
@@ -61,11 +64,11 @@ public class CustomDialog extends Dialog {
 		this.text(text);
 		
 		// Main button
-		this.button(createActionButton(), 0);
+		this.button(createActionButton(), STATUS_OK);
 		
 		// Second button
 		if(type == Type.CONFIRM) {
-			this.button(createActionButton(), 1);
+			this.button(createActionButton(), STATUS_CANCEL);
 		}
 		this.getButtonTable().padTop(-50);
 		this.getButtonTable().padLeft(-20);

@@ -21,6 +21,11 @@ public class RecordingData extends Table {
 		private int second;
 		private int minute;
 		private boolean isPause = false;
+		
+		public TimeScheduler(int second, int minute) {
+			this.second = second;
+			this.minute = minute;
+		}
 
 		@Override
 		public void run() {
@@ -74,7 +79,7 @@ public class RecordingData extends Table {
 	
 	public void start() {
 		timer = new Timer();
-		timerTask = new TimeScheduler();
+		timerTask = new TimeScheduler(AssetLoader.prefs.getInteger("second", 0), AssetLoader.prefs.getInteger("minute", 0));
 		timer.scheduleAtFixedRate(timerTask, MILISECONDS_PERIOD, MILISECONDS_PERIOD);
 		movingCount = 0;
 	}

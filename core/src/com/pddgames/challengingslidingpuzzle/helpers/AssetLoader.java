@@ -1,6 +1,7 @@
 package com.pddgames.challengingslidingpuzzle.helpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.pddgames.challengingslidingpuzzle.gameworld.GameWorld;
 
 /**
  * 
@@ -51,6 +53,8 @@ public class AssetLoader {
 	public static Sound menuSound;
 	public static Music gamePlaySound;
 	
+	public static Preferences prefs;
+	
 	public static void load() {
 		//font.getData().setScale(0.5f);
 		skin = new Skin();
@@ -85,6 +89,8 @@ public class AssetLoader {
 		menuSound = Gdx.audio.newSound(Gdx.files.internal(MENU_AUDIO));
 		gamePlaySound = Gdx.audio.newMusic(Gdx.files.internal(PLAYING_AUDIO));
 		gamePlaySound.setLooping(true);
+		
+		prefs = Gdx.app.getPreferences("com.pddgames.challengingslidingpuzzle.prefs");
 	}
 	
 	private static BitmapFont createFont(String path) {
@@ -94,6 +100,25 @@ public class AssetLoader {
 		BitmapFont font = fontGenerator.generateFont(parameter); // font size 12 pixels
 		fontGenerator.dispose(); // don't forget to dispose to avoid memory leaks!
 		return font;
+	}
+	
+	/**
+	 * Check if an old game is saved or not.
+	 * @return
+	 */
+	public static boolean hasSavedGame() {
+		return prefs.getInteger("second", 0) > 0;
+	}
+	
+	public static void clearSavedGame() {
+		if(hasSavedGame()) {
+			AssetLoader.prefs.remove("second");
+			AssetLoader.prefs.remove("minute");
+			for(int i=0; i < GameWorld.BLOCKS_NUM_PER_ROW * GameWorld.BLOCKS_NUM_PER_ROW; i++) {
+				AssetLoader.prefs.remove("block"+i);
+			}
+			AssetLoader.prefs.flush();
+		}
 	}
 	
 	public static void dispose() {

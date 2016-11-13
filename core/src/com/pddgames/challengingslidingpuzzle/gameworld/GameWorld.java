@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
 import com.pddgames.challengingslidingpuzzle.objects.Block;
 import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
 
@@ -24,7 +25,6 @@ import com.pddgames.challengingslidingpuzzle.objects.RecordingData;
  */
 public class GameWorld extends Table {
 	
-	private static final int BLOCKS_NUM_PER_ROW = 5; // This is also number of blocks per column.
 	private static final int GAP_BETWEEN_BLOCKS = 5;
 	private static final float BLOCK_MOVING_TIME = .2f;
 	
@@ -32,6 +32,8 @@ public class GameWorld extends Table {
 	@SuppressWarnings("rawtypes")
 	private Array<Cell> cells;
 	private RecordingData recordingData;
+	
+	public static final int BLOCKS_NUM_PER_ROW = 5; // This is also number of blocks per column.
 	
 	public GameWorld(RecordingData recordingData) {
 		this.recordingData = recordingData;
@@ -43,17 +45,27 @@ public class GameWorld extends Table {
 		List<Integer> randomNumbers = getRandomNumbers();
 		
 		// Draw blocks up - bottom, from left to right.
+		int numberIndex = 0;// Index for getting numbers for blocks from RandomNumbers.
 		for(int i=0; i < BLOCKS_NUM_PER_ROW; i++) {
 			for(int j=0; j < BLOCKS_NUM_PER_ROW; j++) {
-				int orderNumber = i*BLOCKS_NUM_PER_ROW + j;
+				int index = i*BLOCKS_NUM_PER_ROW + j;
 				Cell<Block> blockCell;
 				Block block;
 				
-				if(i == BLOCKS_NUM_PER_ROW-1 && j == BLOCKS_NUM_PER_ROW-1) {// This is an empty block.
-					block = new Block(orderNumber + 1, blockSize, -1);
+				if (i == BLOCKS_NUM_PER_ROW-1 && j == BLOCKS_NUM_PER_ROW-1 && !AssetLoader.hasSavedGame()) {
+					// This is an empty block. Default position (when start new game) is at the right bottom.
+					block = new Block(index + 1, blockSize, -1);
 					emptyBlock = block;
+					numberIndex++;
 				} else {
-					block = new Block(orderNumber + 1, blockSize, randomNumbers.get(orderNumber));
+					// Try to get saved Block number if it exists.
+					int blockNumer = AssetLoader.prefs.getInteger("block" + (index+1), randomNumbers.get(numberIndex));
+					block = new Block(index + 1, blockSize, blockNumer);
+					if(blockNumer == -1) {// If there is an old game data is saved, load empty block from saved file.
+						emptyBlock = block;
+					} else {
+						numberIndex++;
+					}
 				}
 				
 				block.addListener(new ClickListener() {
@@ -116,7 +128,7 @@ public class GameWorld extends Table {
 	}
 	
 	/**
-	 * Get list of random numbers for all blocks
+	 * Get list of random numbers for all blocks. There are all 24 numbers.
 	 * @return
 	 */
 	private List<Integer> getRandomNumbers() {
@@ -140,7 +152,17 @@ public class GameWorld extends Table {
 			}
 		}
 	}
-		
+	
+	public void saveGameData() {
+		AssetLoader.prefs.putInteger("second", Integer.valueOf(this.recordingData.getSecond()));
+		AssetLoader.prefs.putInteger("minute", Integer.valueOf(this.recordingData.getMinute()));
+		for(int i=0; i<cells.size; i++) {
+			Block block = (Block) cells.get(i).getActor();
+			AssetLoader.prefs.putInteger("block"+block.getOrderNumber(), block.getNumber());
+		}
+		AssetLoader.prefs.flush();
+	}
+	
 	/*public void update(OrthographicCamera camera, float delta) {
 		// Check whether a block is moving
 		boolean isBlockMoving = false;

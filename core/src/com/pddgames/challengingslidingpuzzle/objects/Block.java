@@ -19,7 +19,7 @@ public class Block extends Widget {
 	/**
 	 * Indicate the order of block in GameWord. When block is moved, orderNumber value should be changed.
 	 */
-	private int orderNumber;
+	private int orderNumber;// starts from 1.
 	private float size;
 	private Label label;
 	private int number;

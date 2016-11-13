@@ -84,11 +84,13 @@ public class GameScreen extends ScreenAdapter {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				recordingData.pause();
-				if(recordingData.getMovingCount() > 0) {// Game is already played -> Show confirm pop-up when back to main Menu.
+				if(recordingData.getMovingCount() > 0 || AssetLoader.prefs.getInteger("second") > 0) {// Game is already played -> Show confirm pop-up when back to main Menu.
 					new CustomDialog(Type.CONFIRM, stage, "Game is running.\nAre you sure to quit?") {
 						@Override
 						protected void result(Object object) {
-							if(object.equals(0)) {// Press OK (quit game).
+							if(object.equals(CustomDialog.STATUS_OK)) {// Press OK (quit game).
+								// save game state before quit game
+								gameWorld.saveGameData();
 								((Game) Gdx.app.getApplicationListener()).setScreen(new MenuScreen());
 							} else {
 								recordingData.resume();
@@ -132,7 +134,7 @@ public class GameScreen extends ScreenAdapter {
 					new CustomDialog(CustomDialog.Type.CONFIRM, stage, "Game is running.\nAre you sure to reset?") {
 						@Override
 						protected void result(Object object) {
-							if(object.equals(0)) {// Press OK (reset game).
+							if(object.equals(CustomDialog.STATUS_OK)) {// Press OK (reset game).
 								recordingData.resetData();
 								gameWorld.resetData();
 							} else {
@@ -150,7 +152,7 @@ public class GameScreen extends ScreenAdapter {
 		});
 		table.add(resetBtn).size(BUTTON_SIZE);
 	}
-
+	
 	@Override
 	public void dispose() {
 		stage.dispose();

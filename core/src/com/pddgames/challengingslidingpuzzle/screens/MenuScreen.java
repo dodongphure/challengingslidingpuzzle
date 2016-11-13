@@ -3,6 +3,7 @@ package com.pddgames.challengingslidingpuzzle.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -11,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.pddgames.challengingslidingpuzzle.helpers.AssetLoader;
+import com.pddgames.challengingslidingpuzzle.objects.CustomDialog;
+import com.pddgames.challengingslidingpuzzle.objects.CustomDialog.Type;
 
 /**
  * 
@@ -21,6 +24,7 @@ public class MenuScreen extends ScreenAdapter {
 	
 	private static final float MOVING_DISTANCE = 40;
 	private static final String START_GAME_LABEL = "START";
+	private static final String RESUME_GAME_LABEL = "RESUME";
 	private static final String SETTINGS_LABEL = "SETTINGS";
 	private static final String EXIT_GAME_LABEL = "EXIT";
 	
@@ -79,53 +83,72 @@ public class MenuScreen extends ScreenAdapter {
 	}
 	
 	private void initMenuButtons() {
-		TextButton startBtn = new TextButton(START_GAME_LABEL, AssetLoader.skin.get("menu", TextButtonStyle.class));
-		startBtn.padLeft(-60);
-		startBtn.addAction(Actions.moveBy(30, 0, .3f));
-		startBtn.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				startBtn.scaleBy(50);// TODO: not working now.
-				stage.addAction(Actions.sequence(
-						Actions.moveTo(0, stage.getHeight(), .5f),
-						Actions.run(new Runnable() {
-							@Override
-							public void run() {
-								((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
-							}
+		createMenuButton(START_GAME_LABEL, Actions.sequence(
+				Actions.moveTo(0, stage.getHeight(), .5f),
+				Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						AssetLoader.clearSavedGame();
+						((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
+					}
+				}
+			)));
+		
+		if(AssetLoader.hasSavedGame()) {// Show RESUME button.
+			createMenuButton(RESUME_GAME_LABEL, Actions.sequence(
+					Actions.moveTo(0, stage.getHeight(), .5f),
+					Actions.run(new Runnable() {
+						@Override
+						public void run() {
+							((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
 						}
-					)));
-				
-				AssetLoader.menuSound.play();
-			}
-		});
+					}
+				)));
+		}
 		
-		TextButton exitBtn = new TextButton(EXIT_GAME_LABEL, AssetLoader.skin.get("menu", TextButtonStyle.class));
-		exitBtn.padLeft(60);
-		exitBtn.addAction(Actions.moveBy(-30, 0, .3f));
-		exitBtn.addListener(new ClickListener() {
+		createMenuButton(EXIT_GAME_LABEL, Actions.parallel(
+				Actions.alpha(0, .5f),
+				Actions.moveTo(0, stage.getHeight(), .75f),
+				Actions.delay(.5f, Actions.run(new Runnable() {
+					@Override
+					public void run() {
+						Gdx.app.exit();
+					}
+				}))
+			));
+	}
+	
+	private TextButton createMenuButton(String label, Action action) {
+		TextButton button = new TextButton(label, AssetLoader.skin.get("menu", TextButtonStyle.class));
+		button.padLeft(60);
+		button.addAction(Actions.moveBy(-30, 0, .3f));
+		button.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				exitBtn.scaleBy(50);// TODO: not working now.
-				stage.addAction(Actions.parallel(
-						Actions.alpha(0, .5f),
-						Actions.moveTo(0, stage.getHeight(), .75f),
-						Actions.delay(.5f, Actions.run(new Runnable() {
+				button.scaleBy(50);// TODO: not working now.
+				if(label == START_GAME_LABEL) {// Handle special case for New Game.
+					if(AssetLoader.hasSavedGame()) {
+						new CustomDialog(Type.CONFIRM, stage, "Are you sure to play new game?") {
 							@Override
-							public void run() {
-								Gdx.app.exit();
+							protected void result(Object object) {
+								if(object.equals(CustomDialog.STATUS_OK)) {// Press OK.
+									stage.addAction(action);
+								}
 							}
-						}))
-					));
-				
+						};
+					} else {
+						stage.addAction(action);
+					}
+				} else {
+					stage.addAction(action);
+				}
 				AssetLoader.menuSound.play();
 			}
 		});
-		
-		table.add(startBtn).row();
-		table.add(exitBtn).row();
+		table.add(button).row();
+		return button;
 	}
-
+	
 	/*private void drawMenuItems() {
 		shapeRender.begin(ShapeType.Filled);
 		shapeRender.setColor(1, 1, 1, 1);
