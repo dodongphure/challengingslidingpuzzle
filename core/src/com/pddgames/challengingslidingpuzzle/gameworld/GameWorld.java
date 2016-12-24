@@ -27,6 +27,7 @@ public class GameWorld extends Table {
 	
 	private static final int GAP_BETWEEN_BLOCKS = 5;
 	private static final float BLOCK_MOVING_TIME = .2f;
+	private static final float EFFECT_TIME = .1f;
 	
 	private Block emptyBlock;
 	@SuppressWarnings("rawtypes")
@@ -56,7 +57,6 @@ public class GameWorld extends Table {
 					// This is an empty block. Default position (when start new game) is at the right bottom.
 					block = new Block(index + 1, blockSize, -1);
 					emptyBlock = block;
-					numberIndex++;
 				} else {
 					// Try to get saved Block number if it exists.
 					int blockNumer = AssetLoader.prefs.getInteger("block" + (index+1), randomNumbers.get(numberIndex));
@@ -99,10 +99,8 @@ public class GameWorld extends Table {
 						}
 						
 						// Check for finishing game.
-						for(int i=0; i<cells.size-1; i++) {
-							if(((Block) cells.get(i).getActor()).getNumber() == i+1) {
-								// TODO
-							}
+						if(checkFinishGame()) {
+							//TODO
 						}
 					}
 				});
@@ -138,6 +136,16 @@ public class GameWorld extends Table {
 		 return numbers;
 	}
 	
+	private boolean checkFinishGame() {
+		for(int i=0; i<cells.size-1; i++) {
+			Block block = (Block) cells.get(i).getActor();
+			if(block.getNumber() != block.getOrderNumber()) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public void resetData() {
 		List<Integer> randomNumbers = getRandomNumbers();
 		int count = 0;
@@ -156,6 +164,7 @@ public class GameWorld extends Table {
 	public void saveGameData() {
 		AssetLoader.prefs.putInteger("second", Integer.valueOf(this.recordingData.getSecond()));
 		AssetLoader.prefs.putInteger("minute", Integer.valueOf(this.recordingData.getMinute()));
+		AssetLoader.prefs.putInteger("movingCount", this.recordingData.getMovingCount());
 		for(int i=0; i<cells.size; i++) {
 			Block block = (Block) cells.get(i).getActor();
 			AssetLoader.prefs.putInteger("block"+block.getOrderNumber(), block.getNumber());
@@ -163,32 +172,37 @@ public class GameWorld extends Table {
 		AssetLoader.prefs.flush();
 	}
 	
-	/*public void update(OrthographicCamera camera, float delta) {
-		// Check whether a block is moving
-		boolean isBlockMoving = false;
-		for(Block block : blocks) {
-			isBlockMoving |= block.update(delta);
-		}
-		
-		if (Gdx.input.justTouched()) {
-			Vector3 touchPoint = new Vector3();
-			camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
-			for(Block block : blocks) {
-				float xPosition = block.getX();
-				float yPosition = block.getY();
-				if(!isBlockMoving && isBlockMovable(xPosition, yPosition) && block.isTouched(touchPoint.x, touchPoint.y)) {
-					block.setNewPosition(emptyBlockPosition);
-					emptyBlockPosition.set(xPosition, yPosition);
-					recordingData.inscreaseMovingCount();
-					break;
-				}
+	/**
+	 	0 -> 21
+		1 -> 16 22
+		2 -> 11 17 23
+		3 -> 6 12 18 24
+		4 -> 1 7 13 19 25
+		5 -> 2 8 14 20
+		6 -> 3 9 15
+		7 -> 4 10
+		8 -> 5
+	 */
+	public void runEffect() {
+		int startIndex = BLOCKS_NUM_PER_ROW * (BLOCKS_NUM_PER_ROW-1) + 1;
+		for (int i=0; i<BLOCKS_NUM_PER_ROW * 2 - 1; i++) {
+			int runIndex = i < BLOCKS_NUM_PER_ROW ? startIndex + i : BLOCKS_NUM_PER_ROW * ( BLOCKS_NUM_PER_ROW - (i % BLOCKS_NUM_PER_ROW + 1) );
+			int runCount = i < BLOCKS_NUM_PER_ROW ? i + 1 : BLOCKS_NUM_PER_ROW - (i % BLOCKS_NUM_PER_ROW + 1);
+			while (runIndex > 0 && runCount > 0) {
+				addEffect(runIndex, i*EFFECT_TIME);
+				runIndex = runIndex - BLOCKS_NUM_PER_ROW -1;
+				runCount--;
 			}
 		}
-		
-		if(Integer.valueOf(recordingData.getMinute()) >= GAME_TIME_LIMIT) {
-			//TODO: return to the main menu.
+	}
+	
+	private void addEffect(int orderNumber, float delay) {
+		for (int i=0; i<cells.size; i++) {
+			Block block = (Block) cells.get(i).getActor();
+			if(block.getOrderNumber() == orderNumber) {
+				block.addAction(Actions.sequence(Actions.delay(delay), Actions.sizeBy(1, 1, EFFECT_TIME), Actions.sizeBy(-1, -1, EFFECT_TIME)));
+			}
 		}
-		
-	}*/
-
+	}
+	
 }

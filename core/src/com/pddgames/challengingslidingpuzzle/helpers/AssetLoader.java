@@ -114,7 +114,8 @@ public class AssetLoader {
 		if(hasSavedGame()) {
 			AssetLoader.prefs.remove("second");
 			AssetLoader.prefs.remove("minute");
-			for(int i=0; i < GameWorld.BLOCKS_NUM_PER_ROW * GameWorld.BLOCKS_NUM_PER_ROW; i++) {
+			AssetLoader.prefs.remove("movingCount");
+			for(int i=1; i <= GameWorld.BLOCKS_NUM_PER_ROW * GameWorld.BLOCKS_NUM_PER_ROW; i++) {
 				AssetLoader.prefs.remove("block"+i);
 			}
 			AssetLoader.prefs.flush();

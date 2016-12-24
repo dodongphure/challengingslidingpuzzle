@@ -31,6 +31,10 @@ public class GameScreen extends ScreenAdapter {
 	private RecordingData recordingData;
 	private GameWorld gameWorld;
 	
+	// For creating blocks effect.
+	private int[] runEffectSeconds = {3, 7, 9};
+	private int runSecond = 0;
+	
 	public GameScreen() {
 	}
 
@@ -42,6 +46,8 @@ public class GameScreen extends ScreenAdapter {
 		
 		stage.act(delta);
 		stage.draw();
+		
+		effectRunning();
 	}
 
 	@Override
@@ -137,6 +143,7 @@ public class GameScreen extends ScreenAdapter {
 							if(object.equals(CustomDialog.STATUS_OK)) {// Press OK (reset game).
 								recordingData.resetData();
 								gameWorld.resetData();
+								AssetLoader.clearSavedGame();
 							} else {
 								recordingData.resume();
 							}
@@ -151,6 +158,16 @@ public class GameScreen extends ScreenAdapter {
 			}
 		});
 		table.add(resetBtn).size(BUTTON_SIZE);
+	}
+	
+	private void effectRunning() {
+		for(int second : runEffectSeconds) {
+			int currentSecond = Integer.valueOf(recordingData.getSecond());
+			if(currentSecond % 10 == second && currentSecond != runSecond) {
+				runSecond = currentSecond;
+				gameWorld.runEffect();
+			}
+		}
 	}
 	
 	@Override

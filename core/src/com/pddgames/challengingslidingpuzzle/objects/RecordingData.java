@@ -81,7 +81,7 @@ public class RecordingData extends Table {
 		timer = new Timer();
 		timerTask = new TimeScheduler(AssetLoader.prefs.getInteger("second", 0), AssetLoader.prefs.getInteger("minute", 0));
 		timer.scheduleAtFixedRate(timerTask, MILISECONDS_PERIOD, MILISECONDS_PERIOD);
-		movingCount = 0;
+		movingCount = AssetLoader.prefs.getInteger("movingCount", 0);
 	}
 	
 	public void pause() {

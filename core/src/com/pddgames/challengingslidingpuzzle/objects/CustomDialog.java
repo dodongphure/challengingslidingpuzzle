@@ -21,7 +21,7 @@ public class CustomDialog extends Dialog {
 	private TextButton closeDialogButton;
 	
 	public static final int STATUS_OK = 0;
-	public static final int STATUS_CANCEL = 0;
+	public static final int STATUS_CANCEL = 1;
 	
 	public enum Type {
 		INFO,
